@@ -6,7 +6,7 @@ const users=[{
         healthy:false
     },
     {
-        healthy:false
+        healthy:true
     },
 ]
 }]
