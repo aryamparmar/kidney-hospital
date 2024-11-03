@@ -13,7 +13,32 @@ const users=[{
 
 const app =express();
 app.use(bodyParser.json());
-app.get('/',(req,res)=>{
+
+
+const userVerification=(req,res,next)=>{
+    let name=req.headers.name;
+    let password=req.headers.password;
+    if(name!='aryam'||password!='1234'){
+        res.status(400).send("Wrong name or password");
+        return ;
+    }
+    console.log("user is verified");
+    next();
+}
+const inputValidation=(req,res,next)=>{
+    if(req.query.n>=users.length){
+        res.status(400).send("Invalid User Index");
+        return ;
+    }
+    console.log("input is valid");
+    next();
+}
+
+
+
+
+app.get('/',userVerification,inputValidation,(req,res)=>{
+    
     const userkidney=users[req.query.n].kidneys;
     const kidneylength=userkidney.length;
     let count=0;
