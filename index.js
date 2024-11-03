@@ -35,9 +35,11 @@ const inputValidation=(req,res,next)=>{
 }
 
 
+app.use(userVerification);
+app.use(inputValidation);
+// by using this every route execute these function first
 
-
-app.get('/',userVerification,inputValidation,(req,res)=>{
+app.get('/',(req,res)=>{
     
     const userkidney=users[req.query.n].kidneys;
     const kidneylength=userkidney.length;
@@ -97,6 +99,14 @@ app.delete('/',(req,res)=>{
     });
     else res.send(users[userNumber])
 })
+
+// this is used to handle occur in a route while execution either by wrong inputs by user..
+app.use((err,req,res,next)=>{
+    res.json({
+        msg:"Some error occur"
+    })
+})
+
 app.listen(3000,()=>{
     console.log("app is listening on port 3000");
 })
