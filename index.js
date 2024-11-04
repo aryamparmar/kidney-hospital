@@ -1,5 +1,7 @@
-const express = require("express")
-const bodyParser=require("body-parser")
+const express = require("express");
+const { readdirSync } = require("fs");
+// const bodyParser=require("body-parser")
+const zod=require("zod");
 const users=[{
     name:"John",
     kidneys:[{
@@ -12,12 +14,24 @@ const users=[{
 }]
 
 const app =express();
-app.use(bodyParser.json());
+app.use(express.json());
 
+const schema2=zod.string();
+const schema1=zod.object({
+    name:zod.string().length(5),
+    password:zod.string()
+})
 
 const userVerification=(req,res,next)=>{
+    const response=schema1.safeParse(req.headers);
+    if(response.success==false){
+        res.send("Invalid User name or password");
+        return ;
+    }
+    
     let name=req.headers.name;
     let password=req.headers.password;
+    
     if(name!='aryam'||password!='1234'){
         res.status(400).send("Wrong name or password");
         return ;
@@ -26,6 +40,11 @@ const userVerification=(req,res,next)=>{
     next();
 }
 const inputValidation=(req,res,next)=>{
+    const response=schema2.safeParse(req.query.n);
+    if(response.success==false){
+        res.send("Invalid Index number");
+        return ;
+    }
     if(req.query.n>=users.length){
         res.status(400).send("Invalid User Index");
         return ;
